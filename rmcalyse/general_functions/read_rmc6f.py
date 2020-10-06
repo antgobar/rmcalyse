@@ -13,11 +13,6 @@
 # ------------------------------------------------------------------------
 
 import re           # regular expressions
-import os
-
-cwd = os.getcwd()
-read_in_path = cwd + '/read_in/'
-
 
 def read_in(file_in):
     '''
@@ -25,7 +20,7 @@ def read_in(file_in):
     parametere e.g. unit cell parameters and atomic positions
     '''
 
-    rmc6f_input = open(read_in_path + file_in, 'r')
+    rmc6f_input = open(file_in, 'r')
 
     line_elements = []
     line_density = []
