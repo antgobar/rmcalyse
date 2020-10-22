@@ -13,8 +13,8 @@ from plotting_functions import (plot_supercell as ps,
                                 plot_iteratomdist_histogram as pih,
                                 plot_relative_positions as prp,
                                 plot_centroid_vector_histogram as cvh,
-                                plot_centroid_vector_3d as cv3d)
-                                #plot_stereographic_projection as sp)
+                                plot_centroid_vector_3d as cv3d,
+                                plot_stereographic_projection as sp)
 
 ###---------------------------------------------------------------------
 ###=====================================================================
@@ -23,7 +23,7 @@ from plotting_functions import (plot_supercell as ps,
 ###_____________________CONFIGURATION PARAMETERS________________________
 ###---------------------------------------------------------------------
 
-file_in = 'read_in/STO_3.rmc6f'
+file_in = 'read_in/SrTiO3_00Nb.rmc6f'
 atomA = ['Sr']
 atomB = ['Ti']
 min_d = 2   # Min range for distance calculations (if = 0 distance to
@@ -62,7 +62,7 @@ pih.iad_hist(op, atomA, atomB, min_d, max_d, hist_bin_size, combine)
 cent_vect, centroid = \
     cv.centroid_calc(op, atomA, atomB, centroid_shell_d, coord_no)
 
-#sp.stereographic_projection(cent_vect)
+sp.stereographic_projection(cent_vect)
 
 cvh.vector_hist(cent_vect)
 
