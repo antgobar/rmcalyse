@@ -50,15 +50,26 @@ def read_in(file_in):
 ##    print('\nFile is closed: ', rmc6f_input.closed)
 
     # Put element, atom no. and atomic positions into lists
-    temp = re.findall('[-+]?\d*\.\d+|\d+', line_elements)  # FIX
-    elements = [float(i) for i in temp]  # FIX
+
+    # elements
+    keyword = 'Atom types present:'
+    leading_string, keyword, elements_string = line_elements.partition(keyword)
+    elements_string = elements_string.strip()
+    elements = re.sub("[^\w]", " ",  elements_string).split()
+
+    # density
     temp = re.findall('\d+\.\d+', line_density)
     density = [float(i) for i in temp]
+
+    # supercell dimensions e.g. 4 4 4
     temp = re.findall('[-+]?\d*\.\d+|\d+', line_supercell)
     supercell = [int(i) for i in temp]
+
+    # supercell parameters: a, b, c, alpha, beta, gamma
     temp = re.findall('[-+]?\d*\.\d+|\d+', line_cell)
     cell = [float(i) for i in temp]  # Needed for interatomic distances
 
+# Create list of atoms
     atom_list = []
     for line in line_atom_list:
         temp = []
@@ -76,4 +87,4 @@ def read_in(file_in):
 # print('\nFormat of atom list (non orthonormalised): ',\
 # atom_list_head, atom_list[0], sep = '\n')
 
-    return cell, atom_list
+    return cell, atom_list, elements

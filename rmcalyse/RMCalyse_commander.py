@@ -46,7 +46,7 @@ atom4av_cell = 'Ti' # Atom choice from which to calculate average
 ###---------------------------------------------------------------------
 
 rmc6f_data = rr.read_in(file_in)
-cell, atom_list = rmc6f_data
+cell, atom_list, elements = rmc6f_data
 
 op= on.orthonormalise(cell, atom_list)
 
