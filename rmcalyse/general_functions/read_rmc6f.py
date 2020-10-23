@@ -28,7 +28,7 @@ def read_in(file_in):
     line_cell = []
     line_atom_list = []
 
-##    print('\nReading file:', file_in, '...')
+    # print('\nReading file:', file_in, '...')
 
     # Extract and save variables
     for line in rmc6f_input:
