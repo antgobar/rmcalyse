@@ -1,12 +1,12 @@
-###------------------------------------------------------------------------
+# ------------------------------------------------------------------------
 ###
-### Supercell class
+# Supercell class
 ###
 ###
-###------------------------------------------------------------------------
+# ------------------------------------------------------------------------
 import re
 class SuperCell():
-    
+
     def __init__(self, file_path):
         self.file_path = file_path
         self.cell_parameters = None
@@ -14,7 +14,6 @@ class SuperCell():
         self.atom_list = None
         self.supercell_size = None
         self.density = None
-        
 
     def get_data(self):
         with open(self.file_path, 'r') as f:
@@ -33,7 +32,7 @@ class SuperCell():
             # Supercell dimensions
             if line.find('Supercell') >= 0:
                 line_supercell_size = line
-            # Supercell parameters 
+            # Supercell parameters
             if line.find('Cell') >= 0:
                 line_cell = line
             # Atom list
@@ -45,12 +44,12 @@ class SuperCell():
         # Elements
         key = 'Atom types present:'
         lead_str, keyword, elements_str = line_elements.partition(key)
-        elements_str= elements_str.strip()
-        elements = re.sub("[^\w]", " ",  elements_str).split()
+        elements_str = elements_str.strip()
+        elements = re.sub("[^\w]", " ", elements_str).split()
 
         # Density - currently not used
         temp = re.findall('\d+\.\d+', line_density)
-        density = [float(i) for i in temp]        
+        density = [float(i) for i in temp]
 
         # supercell dimensions - currently not used
         temp = re.findall('[-+]?\d*\.\d+|\d+', line_supercell_size)
@@ -62,16 +61,19 @@ class SuperCell():
 
         atom_list = []
         for line in atom_list_lines:
-            temp = []
-            temp_1 = re.findall(r'\b\d+\b', line)  # ints
-            temp_2 = re.findall('[a-zA-Z]+', line)  # letters
-            temp_3 = re.findall('\d+\.\d+', line)  # floats
-            temp.append(temp_2[0])
-            temp.append(int(temp_1[0]))
-            temp.append(float(temp_3[0]))
-            temp.append(float(temp_3[1]))
-            temp.append(float(temp_3[2]))
-            atom_list.append(temp)
+            temp_list = []
+            split = line.split()
+            element = split[1]
+            number = int(split[0])
+            pos_x = float(split[3])
+            pos_y = float(split[4])
+            pos_z = float(split[5])
+            temp_list.append(element)
+            temp_list.append(number)
+            temp_list.append(pos_x)
+            temp_list.append(pos_y)
+            temp_list.append(pos_z)
+            atom_list.append(temp_list)
 
         self.cell_parameters = cell_parameters
         self.elements = elements
@@ -79,6 +81,5 @@ class SuperCell():
         self.supercell_size = supercell_size
         self.density = density
 
-    
-#path2 = '/Users/Anton/Documents/Python_Programs/rmcalyse/rmcalyse/read_in/STO_2.rmc6f'
 
+path2 = '/Users/Anton/Documents/Python_Programs/rmcalyse/rmcalyse/read_in/STO_2.rmc6f'
