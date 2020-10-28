@@ -1,21 +1,32 @@
-# ------------------------------------------------------------------------
+### --------------------------------------------------------------------
 ###
-# Supercell class
+### Supercell class
 ###
 ###
-# ------------------------------------------------------------------------
+### --------------------------------------------------------------------
 import re
+import numpy as np
+
+example_path = '/Users/Anton/Documents/Python_Programs/rmcalyse/rmcalyse/read_in/STO_2.rmc6f'
+
+
 class SuperCell():
 
     def __init__(self, file_path):
+
         self.file_path = file_path
         self.cell_parameters = None
         self.elements = None
         self.atom_list = None
         self.supercell_size = None
         self.density = None
+        self.volume = None
+        self.orth_pos = None
+        self.orth_lbl_pos = None
+        
 
     def get_data(self):
+
         with open(self.file_path, 'r') as f:
             rmc_data = f.readlines()
 
@@ -39,7 +50,7 @@ class SuperCell():
             if line.find('[1]') >= 0:
                 atom_list_lines.append(line)
 
-        # Put element, atom no. and atomic positions into lists
+        # Put element, atom no. and atomic positions etc. into lists
 
         # Elements
         key = 'Atom types present:'
@@ -59,6 +70,8 @@ class SuperCell():
         temp = re.findall('[-+]?\d*\.\d+|\d+', line_cell)
         cell_parameters = [float(i) for i in temp]
 
+        # Create atom list of lists, format:
+        # [element, number, position x, position y, position z]
         atom_list = []
         for line in atom_list_lines:
             temp_list = []
@@ -82,4 +95,73 @@ class SuperCell():
         self.density = density
 
 
-path2 = '/Users/Anton/Documents/Python_Programs/rmcalyse/rmcalyse/read_in/STO_2.rmc6f'
+    def volume_matrix(self):
+        """Converion to orthonormal atomic positions"""
+        # Initialise matrix 
+        cell = self.cell_parameters
+        atom_list = self.atom_list
+        
+        a = self.cell_parameters[0]
+        b = self.cell_parameters[1]
+        c = self.cell_parameters[2]
+
+        al = np.deg2rad(self.cell_parameters[3])
+        be = np.deg2rad(self.cell_parameters[4])
+        ga = np.deg2rad(self.cell_parameters[5])
+
+        volume = a*b*c * (1 - np.cos(al)**2 - np.cos(be)**2 - \
+        np.cos(ga)**2 + 2*np.cos(al)*np.cos(be)*np.cos(ga))**0.5
+
+        a1 = a
+        a2 = 0
+        a3 = 0
+
+        b1 = b * np.cos(ga)
+        b2 = b * np.sin(ga)
+        b3 = 0
+
+        c1 = c * np.cos(be)
+        c2 = c * (np.cos(al) - (np.cos(be) * \
+             np.cos(ga))) / np.sin(ga)
+        c3 = volume / (a * b * np.sin(ga))
+
+        M = np.array([[a1, b1, c1], [a2, b2, c2], [a3, b3, c3]])
+
+
+        ## returns
+        # Supercell volume
+        self.supercell_volume = volume
+        # Volume of a single cell (average)
+        self.average_cell_volume = volume / np.prod(self.supercell_size)
+        # Transformation matrix
+        self.matrix = M
+        
+        
+        # Orthonormalisation a set of coordinates using with
+        # the transformation matrix M (self.matrix).
+    def orthonormalise_cell(self):
+
+        M = self.matrix
+        
+        labels = np.array(self.atom_list[:,:2])
+        atomic_positions = np.array(self.atom_list[:,2:5])
+        atomic_positions = 
+        orthonormal_positions = (M @ atom_positions.transpose()).transpose()
+
+        self.orth_pos = orthonormal_positions
+
+        # join labels and positions
+        orthornormal_labels_positions = np.hstack((labels, orth_pos))
+
+        self.orth_lbl_pos = orthornormal_labels_positions
+        
+        
+
+        
+            
+
+        
+            
+        
+
+
