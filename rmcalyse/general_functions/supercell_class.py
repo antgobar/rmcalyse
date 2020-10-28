@@ -7,9 +7,6 @@
 import re
 import numpy as np
 
-example_path = '/Users/Anton/Documents/Python_Programs/rmcalyse/rmcalyse/read_in/STO_2.rmc6f'
-
-
 class SuperCell():
 
     def __init__(self, file_path):
@@ -95,11 +92,20 @@ class SuperCell():
         self.density = density
 
 
-    def volume_matrix(self):
+    def matrix_init(self, cell = None, atom_list = None):
         """Converion to orthonormal atomic positions"""
+
         # Initialise matrix 
-        cell = self.cell_parameters
-        atom_list = self.atom_list
+        # if-else block for different user inputs, why not?
+        if cell == None:
+            cell = self.cell_parameters
+        else:
+            self.cell_parameters = cell
+
+        if atom_list == None:
+            atom_list = self.atom_list
+        else:
+            self.atom_list = atom_list
         
         a = self.cell_parameters[0]
         b = self.cell_parameters[1]
@@ -136,27 +142,40 @@ class SuperCell():
         # Transformation matrix
         self.matrix = M
         
-        
-        # Orthonormalisation a set of coordinates using with
-        # the transformation matrix M (self.matrix).
-    def orthonormalise_cell(self):
 
+    def orthonormalise_cell(self):
+        """
+        Orthonormalisation a set of coordinates using with
+        the transformation matrix M (self.matrix).
+        """
+        
         M = self.matrix
         
-        labels = np.array(self.atom_list[:,:2])
-        atomic_positions = np.array(self.atom_list[:,2:5])
-        atomic_positions = 
+        labels = np.array(self.atom_list)[:,:2]
+        atom_positions = np.array(self.atom_list)[:,2:5]
+
+        # Issued with dtype for matrix calculations
+        # Make dtype float64
+        atom_positions = np.float64(atom_positions)
         orthonormal_positions = (M @ atom_positions.transpose()).transpose()
 
-        self.orth_pos = orthonormal_positions
-
+        # Round to make very small values (e.g. ~10e-16) zero
+        orth_pos = np.around(orthonormal_positions, 8)
+        self.orth_pos = orth_pos
+        
         # join labels and positions
         orthornormal_labels_positions = np.hstack((labels, orth_pos))
-
         self.orth_lbl_pos = orthornormal_labels_positions
         
         
+### In house testing
 
+example_path = '/Users/Anton/Documents/Python_Programs/rmcalyse/rmcalyse/read_in/STO_2.rmc6f'
+
+rmc_example = SuperCell(example_path)
+rmc_example.get_data()
+rmc_example.matrix_init()
+rmc_example.orthonormalise_cell()
         
             
 
