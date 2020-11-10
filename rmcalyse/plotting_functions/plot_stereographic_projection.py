@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import gaussian_kde
+import seaborn as sns
+
 
 def stereographic_projection(cent_vect):
     '''
@@ -16,30 +17,38 @@ def stereographic_projection(cent_vect):
     x_vect = np.array([cent_vect[i][0] for i, cent in enumerate(cent_vect)])
     y_vect = np.array([cent_vect[i][1] for i, cent in enumerate(cent_vect)])
     z_vect = np.array([cent_vect[i][2] for i, cent in enumerate(cent_vect)])
-    
+
     # magnitude used for normalisation
     vector_magnitude = np.sqrt((x_vect**2) + (y_vect**2) + (z_vect**2))
-    
-    x_norm = np.absolute(x_vect/vector_magnitude)
-    y_norm = np.absolute(y_vect/vector_magnitude)
-    z_norm = np.absolute(z_vect/vector_magnitude)
 
-    # average vector (temporary fix, see below) 
+    x_norm = np.absolute(x_vect / vector_magnitude)
+    y_norm = np.absolute(y_vect / vector_magnitude)
+    z_norm = np.absolute(z_vect / vector_magnitude)
+
+    # average vector (temporary fix, see below)
     x_av = np.mean(x_norm)
     y_av = np.mean(y_norm)
-    
-    # Calculate the point density, note z_norm not used here
-    # FIX NEEDED see issue #2 on github
 
-##    xy = np.vstack([x_norm,y_norm])
-##    z = gaussian_kde(xy)(xy)
-##
-##    fig, ax = plt.subplots()
-##    ax.scatter(x_norm, y_norm, c=z, s=200, edgecolor='')
+    # quarter circle points
+    x = np.linspace(0, 1, 100)
+    y = np.sqrt(1 - x ** 2)
 
-    plt.scatter(x_norm, y_norm)
-    plt.scatter(x_av, y_av)
-    plt.legend(['projected vectors', 'average'])
-    plt.title('This needs fixing - issue #2 on github')
+    # plotting
+    sns.kdeplot(x=x_norm,
+                y=y_norm,
+                kde=True,
+                fill=True,
+                levels=20,
+                thresh=0.2)
+
+    plt.scatter(x_norm, y_norm, label='data', c='darkorange', alpha=0.7)
+    plt.scatter(x_av, y_av, label='average', c='red')
+    plt.plot(x, y, c='k')
+
+    plt.xlim(0, 1)
+    plt.ylim(0, 1)
+
+    plt.legend()
+
     plt.gca().set_aspect('equal', adjustable='box')
     plt.show()

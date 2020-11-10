@@ -1,6 +1,7 @@
 import numpy as np
 from general_functions import distance_calculator as dc
 
+
 def centroid_calc(orthonormal_positions, center_atom, orbit_atoms, max_d, coord_no):
     '''
     Takes center_atom e.g. 'Ti', and orbit_atoms e.g. 'Pb', and

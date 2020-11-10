@@ -1,11 +1,11 @@
-### --------------------------------------------------------------------
+# --------------------------------------------------------------------
 ###
-### Supercell class:
-### Methods
-### get_data(): reads in rmc6f file from the set file path
-### orthonormalise_cell(): converts atomic coordinates to an orthonormal basis
+# Supercell class:
+# Methods
+# get_data(): reads in rmc6f file from the set file path
+# orthonormalise_cell(): converts atomic coordinates to an orthonormal basis
 ###
-### --------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 import re
 import numpy as np
@@ -21,9 +21,13 @@ class SuperCell():
         self.supercell_size = None
         self.density = None
         self.volume = None
-        self.orth_pos = None
-        self.orth_lbl_pos = None
-        
+
+        self.matrix = None
+
+        self.orth_header = None
+        self.orth_labels = None
+        self.orth_positions = None
+        self.orth_pos_lbl = None
 
     def get_data(self):
 
@@ -32,7 +36,7 @@ class SuperCell():
 
         atom_list_lines = []
 
-        # Loop through file to find matching sfgtgtfgtrfgtfgtfgtftgfggftrings
+        # Loop through file to find matching strings
         for line in rmc_data:
             # Elements
             if line.find('Atom types present:') >= 0:
@@ -58,11 +62,11 @@ class SuperCell():
         elements_str = elements_str.strip()
         elements = re.sub("[^\w]", " ", elements_str).split()
 
-        # Density - currently not used
+        # Density
         temp = re.findall('\d+\.\d+', line_density)
         density = [float(i) for i in temp]
 
-        # supercell dimensions - currently not used
+        # supercell dimensions
         temp = re.findall('[-+]?\d*\.\d+|\d+', line_supercell_size)
         supercell_size = [int(i) for i in temp]
 
@@ -99,11 +103,11 @@ class SuperCell():
         Orthonormalisation of a set of 3D coordinates.
         Coordinates taken from <atom_list>
         Original basis taken grom <cell_parameters>
-        """        
+        """
         ######################################################
-        ### Initialise transformation matrix M
+        # Initialise transformation matrix M
         ###
-        
+
         a = self.cell_parameters[0]
         b = self.cell_parameters[1]
         c = self.cell_parameters[2]
@@ -112,8 +116,14 @@ class SuperCell():
         be = np.deg2rad(self.cell_parameters[4])
         ga = np.deg2rad(self.cell_parameters[5])
 
-        volume = a*b*c * (1 - np.cos(al)**2 - np.cos(be)**2 - \
-        np.cos(ga)**2 + 2*np.cos(al)*np.cos(be)*np.cos(ga))**0.5
+        volume = (a * b * c *
+                  (1 - np.cos(al)**2
+                   - np.cos(be)**2
+                   - np.cos(ga)**2
+                   + 2 * np.cos(al)
+                   * np.cos(be)
+                   * np.cos(ga))
+                  ** 0.5)
 
         a1 = a
         a2 = 0
@@ -124,8 +134,8 @@ class SuperCell():
         b3 = 0
 
         c1 = c * np.cos(be)
-        c2 = c * (np.cos(al) - (np.cos(be) * \
-             np.cos(ga))) / np.sin(ga)
+        c2 = c * (np.cos(al) - (np.cos(be) *
+                                np.cos(ga))) / np.sin(ga)
         c3 = volume / (a * b * np.sin(ga))
 
         M = np.array([[a1, b1, c1], [a2, b2, c2], [a3, b3, c3]])
@@ -135,34 +145,36 @@ class SuperCell():
         self.average_cell_volume = volume / np.prod(self.supercell_size)
 
         self.matrix = M
-        
+
         ###
         ###
         ######################################################
 
         ######################################################
-        ### Orthonormalisation calculaion
+        # Orthonormalisation calculaion
         ###
-        
-        labels = np.array(self.atom_list)[:,:2]
-        atom_positions = np.array(self.atom_list)[:,2:5]
 
-        # Issued with dtype for matrix calculations
+        atom_positions = np.array(self.atom_list)[:, 2:5]
+
         # Make dtype float64
         atom_positions = np.float64(atom_positions)
-        
-        orthonormal_positions = np.dot(M, atom_positions.T).T
-        
+
+        orth_positions = np.dot(M, atom_positions.T).T
+
         # Round to make very small values (e.g. ~10e-16), zero.
-        orth_pos = np.around(orthonormal_positions, 8)
-        # Unlabeled orthonormal positions
-        self.orth_pos = orth_pos
-        
-        # Labeled orthonormal positions
-        orthornormal_labels_positions = np.hstack((labels, orth_pos))
-        self.orth_lbl_pos = orthornormal_labels_positions
+        orth_positions = np.around(orth_positions, 8)
+
+        self.orth_positions = orth_positions
+
         self.orth_header = ['Element', 'ID', 'x', 'y', 'z']
-        
+        self.orth_labels = np.array(self.atom_list)[:, :2].tolist()
+
+        lbl_list = self.orth_labels
+        orth_list = self.orth_positions.tolist()
+
+        opl = [lbl + pos for lbl, pos in zip(lbl_list, orth_list)]
+        self.orth_pos_lbl = opl
+
         ###
         ###
         ######################################################
