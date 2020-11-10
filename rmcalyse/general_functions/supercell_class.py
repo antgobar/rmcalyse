@@ -1,9 +1,12 @@
 ### --------------------------------------------------------------------
 ###
-### Supercell class
-###
+### Supercell class:
+### Methods
+### get_data(): reads in rmc6f file from the set file path
+### orthonormalise_cell(): converts atomic coordinates to an orthonormal basis
 ###
 ### --------------------------------------------------------------------
+
 import re
 import numpy as np
 
@@ -29,7 +32,7 @@ class SuperCell():
 
         atom_list_lines = []
 
-        # Loop through file to find matching strings
+        # Loop through file to find matching sfgtgtfgtrfgtfgtfgtftgfggftrings
         for line in rmc_data:
             # Elements
             if line.find('Atom types present:') >= 0:
@@ -91,21 +94,15 @@ class SuperCell():
         self.supercell_size = supercell_size
         self.density = density
 
-
-    def matrix_init(self, cell = None, atom_list = None):
-        """Converion to orthonormal atomic positions"""
-
-        # Initialise matrix 
-        # if-else block for different user inputs, why not?
-        if cell == None:
-            cell = self.cell_parameters
-        else:
-            self.cell_parameters = cell
-
-        if atom_list == None:
-            atom_list = self.atom_list
-        else:
-            self.atom_list = atom_list
+    def orthonormalise_cell(self):
+        """
+        Orthonormalisation of a set of 3D coordinates.
+        Coordinates taken from <atom_list>
+        Original basis taken grom <cell_parameters>
+        """        
+        ######################################################
+        ### Initialise transformation matrix M
+        ###
         
         a = self.cell_parameters[0]
         b = self.cell_parameters[1]
@@ -133,23 +130,19 @@ class SuperCell():
 
         M = np.array([[a1, b1, c1], [a2, b2, c2], [a3, b3, c3]])
 
-
-        ## returns
-        # Supercell volume
         self.supercell_volume = volume
-        # Volume of a single cell (average)
+
         self.average_cell_volume = volume / np.prod(self.supercell_size)
-        # Transformation matrix
+
         self.matrix = M
         
+        ###
+        ###
+        ######################################################
 
-    def orthonormalise_cell(self):
-        """
-        Orthonormalisation a set of coordinates using with
-        the transformation matrix M (self.matrix).
-        """
-        
-        M = self.matrix
+        ######################################################
+        ### Orthonormalisation calculaion
+        ###
         
         labels = np.array(self.atom_list)[:,:2]
         atom_positions = np.array(self.atom_list)[:,2:5]
@@ -157,30 +150,19 @@ class SuperCell():
         # Issued with dtype for matrix calculations
         # Make dtype float64
         atom_positions = np.float64(atom_positions)
-        orthonormal_positions = (M @ atom_positions.transpose()).transpose()
-
-        # Round to make very small values (e.g. ~10e-16) zero
+        
+        orthonormal_positions = np.dot(M, atom_positions.T).T
+        
+        # Round to make very small values (e.g. ~10e-16), zero.
         orth_pos = np.around(orthonormal_positions, 8)
+        # Unlabeled orthonormal positions
         self.orth_pos = orth_pos
         
-        # join labels and positions
+        # Labeled orthonormal positions
         orthornormal_labels_positions = np.hstack((labels, orth_pos))
         self.orth_lbl_pos = orthornormal_labels_positions
+        self.orth_header = ['Element', 'ID', 'x', 'y', 'z']
         
-        
-### In house testing
-
-example_path = '/Users/Anton/Documents/Python_Programs/rmcalyse/rmcalyse/read_in/STO_2.rmc6f'
-
-rmc_example = SuperCell(example_path)
-rmc_example.get_data()
-rmc_example.matrix_init()
-rmc_example.orthonormalise_cell()
-        
-            
-
-        
-            
-        
-
-
+        ###
+        ###
+        ######################################################
