@@ -23,7 +23,7 @@ from plotting_functions import (plot_supercell as ps,
 # _____________________CONFIGURATION PARAMETERS________________________
 # ---------------------------------------------------------------------
 
-file_in = 'read_in/SrTiO3_30Nb.rmc6f'
+file_in = 'read_in/SrTiO3_00Nb_SCARF.rmc6f'
 atomA = ['Sr']
 atomB = ['Ti', 'Nb']
 min_d = 1   # Min range for distance calculations (if = 0 distance to
@@ -68,9 +68,9 @@ cent_vect, centroid = cv.centroid_calc(op,
                                        centroid_shell_d,
                                        coord_no)
 
-# sp.stereographic_projection(cent_vect)
+sp.stereographic_projection(cent_vect, show_points=False, collapse_eighth=True)
 
-cvh.vector_hist(cent_vect)
+# cvh.vector_hist(cent_vect)
 
 #net_vect = cv3d.centroid_vector_plot(cent_vect, centroid, atomA, atomB)
 

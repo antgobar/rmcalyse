@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+
 def centroid_vector_plot(cent_vect, centroid, atomA, atomB):
     '''
     Plot 3D vector field of vectors describing the off centering of
