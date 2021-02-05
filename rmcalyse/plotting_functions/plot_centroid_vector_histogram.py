@@ -23,8 +23,8 @@ def vector_hist(cent_vect):
 
     sns.histplot(data=list_lengths, bins=bins, kde=True)
     plt.title('Histograms of offcentering vectors')
-    plt.xlim(0, .5)
-    plt.ylim(0, 100)
+    # plt.xlim(0, .5)
+    # plt.ylim(0, 100)
     plt.xlabel('Displacement magnitude')
     plt.ylabel('Count')
     plt.show()

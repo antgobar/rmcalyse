@@ -55,7 +55,7 @@ class SuperCell():
                 atom_list_lines.append(line)
 
         # Put element, atom no. and atomic positions etc. into lists
-
+        
         # Elements
         key = 'Atom types present:'
         lead_str, keyword, elements_str = line_elements.partition(key)

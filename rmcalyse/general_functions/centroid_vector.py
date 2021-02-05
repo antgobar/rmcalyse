@@ -14,6 +14,7 @@ def centroid_calc(orthonormal_positions, center_atom, orbit_atoms, max_d, coord_
 
     center = []
     orbits = []
+
     # Script similar to interatomic distance script
     for nC, atom in enumerate(orthonormal_positions):
         if orthonormal_positions[nC][0] in center_atom:

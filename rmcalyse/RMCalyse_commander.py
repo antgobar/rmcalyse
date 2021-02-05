@@ -23,9 +23,9 @@ from plotting_functions import (plot_supercell as ps,
 # _____________________CONFIGURATION PARAMETERS________________________
 # ---------------------------------------------------------------------
 
-file_in = 'read_in/SrTiO3_00Nb_SCARF.rmc6f'
-atomA = ['Sr']
-atomB = ['Ti', 'Nb']
+file_in = 'read_in/SrTiO3_30Nb_SCARF.rmc6f'
+atomA = ['Ti','Nb']
+atomB = ['Sr']
 min_d = 1   # Min range for distance calculations (if = 0 distance to
 # itself will be included in the histogram!)
 max_d = 4   # For centroid vector this <= than nearest neghbour
@@ -58,6 +58,8 @@ op = on.orthonormalise(cell, atom_list)
 #                                                          min_d,
 #                                                          max_d)
 
+# prp.plot_rel_pos(relative_positions, atomA, atomB)
+
 # average_param = ac.av_unit_cell(op, atom4av_cell, 4.5)
 
 # pih.iad_hist(op, atomA, atomB, min_d, max_d, hist_bin_size, combine)
@@ -68,13 +70,12 @@ cent_vect, centroid = cv.centroid_calc(op,
                                        centroid_shell_d,
                                        coord_no)
 
-sp.stereographic_projection(cent_vect, show_points=False, collapse_eighth=True)
+sp.stereographic_projection(cent_vect, show_points=False, plot_area='full')
 
 # cvh.vector_hist(cent_vect)
 
-#net_vect = cv3d.centroid_vector_plot(cent_vect, centroid, atomA, atomB)
+# net_vect = cv3d.centroid_vector_plot(cent_vect, centroid, atomA, atomB)
 
-# prp.plot_rel_pos(relative_positions, atomA, atomB)
 
 # ---------------------------------------------------------------------
 # =====================================================================
