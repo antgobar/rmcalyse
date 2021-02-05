@@ -5,7 +5,8 @@ import seaborn as sns
 
 def stereographic_projection(cent_vect,
                              show_points=True,
-                             plot_area='full'):
+                             plot_area='full',
+                             weighted=True):
     '''
     Takes centroid vector outputs from centroid_calc function.
     Vectors are normalised (x,y,z components divided by magnitude of vector).
@@ -40,7 +41,10 @@ def stereographic_projection(cent_vect,
     # Distance from centre
     r_dist = np.sqrt(x_norm ** 2 +  y_norm ** 2)
     # Weighted by r_dist. Penalised follows inverse of semicircle function
-    weights = np.sqrt(1- r_dist ** 2)
+    if weighted == True:
+        weights = np.sqrt(1- r_dist ** 2)
+    elif weighted == False:
+        weights = None
 
     # conditional statements to plot full, half, quarter or eighth projection
     if plot_area == 'full':
@@ -110,7 +114,8 @@ def stereographic_projection(cent_vect,
                 fill=True,
                 levels=100,
                 thresh=0.2,
-                weights=weights)
+                weights=weights
+                )
 
     # function argument to show points
     if show_points == True:
