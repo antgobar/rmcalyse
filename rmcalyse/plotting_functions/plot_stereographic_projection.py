@@ -2,11 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from plotting_functions import plot_stereographic_projection_net as spn
+
 
 def stereographic_projection(cent_vect,
                              show_points=True,
                              plot_area='full',
-                             weighted=True):
+                             weighted=True,
+                             net=True):
     '''
     Takes centroid vector outputs from centroid_calc function.
     Vectors are normalised (x,y,z components divided by magnitude of vector).
@@ -17,13 +20,21 @@ def stereographic_projection(cent_vect,
     Note: vectors are all mapped to positive quadrant
 
     Arguments:
-    cent_vetc: list of centroid vectors
-    show_points: show vector points if True. If False, only kde shows
-    plot_area: area of circle to show.
+    cent_vetc:
+        list of centroid vectors
+    show_points:
+        show vector points if True. If False, only kde shows
+    plot_area:
+        area of circle to show.
         full: z values mapped as positive 
         half: z & y vectors mapped y <= 0 quadrants
         quarter: z & y & x vectors mapped to y <= 0 and x <= quadrants
-        8th: 
+        8th: quarter collapsed into octant
+    weighted:
+        weighting points further from center less, avoid high point
+        density at edges
+    net:
+        overlay stereographic projection net if True
     '''
     # Separate x y z compoents from cent_vect input (for plotting)
     x_vect = np.array([cent_vect[i][0] for i, cent in enumerate(cent_vect)])
@@ -134,7 +145,11 @@ def stereographic_projection(cent_vect,
         plt.plot([0, circle_start], [0, max(y_circle)], c='k')
 
     plt.legend()
-    plt.gca().set_aspect('equal', adjustable='box')
 
+    if net == True:
+        spn.sp_net(radius=1)
+    
+    plt.gca().set_aspect('equal', adjustable='box')
+    
     plt.show()
 

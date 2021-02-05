@@ -73,7 +73,8 @@ cent_vect, centroid = cv.centroid_calc(op,
 sp.stereographic_projection(cent_vect,
                             show_points=False,
                             plot_area='full',
-                            weighted=True)
+                            weighted=True,
+                            net=True)
 
 # cvh.vector_hist(cent_vect)
 
