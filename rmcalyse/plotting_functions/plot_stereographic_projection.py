@@ -151,5 +151,5 @@ def stereographic_projection(cent_vect,
     
     plt.gca().set_aspect('equal', adjustable='box')
     
-    plt.show()
+    #plt.show()
 
