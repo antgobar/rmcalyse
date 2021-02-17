@@ -1,15 +1,11 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 
-from plotting_functions import plot_stereographic_projection_net as spn
-
-
-def stereographic_projection(cent_vect,
-                             show_points=True,
-                             plot_area='full',
-                             weighted=True,
-                             net=True):
+def orthographic_projection(centroid_vector,
+                            show_points=True,
+                            plot_area='full',
+                            weighted=True,
+                            net=True):
+    
     '''
     Takes centroid vector outputs from centroid_calc function.
     Vectors are normalised (x,y,z components divided by magnitude of vector).
@@ -36,10 +32,10 @@ def stereographic_projection(cent_vect,
     net:
         overlay stereographic projection net if True
     '''
-    # Separate x y z compoents from cent_vect input (for plotting)
-    x_vect = np.array([cent_vect[i][0] for i, cent in enumerate(cent_vect)])
-    y_vect = np.array([cent_vect[i][1] for i, cent in enumerate(cent_vect)])
-    z_vect = np.array([cent_vect[i][2] for i, cent in enumerate(cent_vect)])
+    # Separate x y z compoents from centroid_vector input (for plotting)
+    x_vect = centroid_vector[: , 0]
+    y_vect = centroid_vector[: , 1]
+    z_vect = centroid_vector[: , 2]
 
     # Vector normaliseadtion
     # calculate magnitude first
@@ -49,8 +45,10 @@ def stereographic_projection(cent_vect,
     y_norm = y_vect / vector_magnitude
     z_norm = z_vect / vector_magnitude
 
+
     # Distance from centre
     r_dist = np.sqrt(x_norm ** 2 +  y_norm ** 2)
+
     # Weighted by r_dist. Penalised follows inverse of semicircle function
     if weighted == True:
         weights = np.sqrt(1- r_dist ** 2)

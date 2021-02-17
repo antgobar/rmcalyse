@@ -23,7 +23,8 @@ from plotting_functions import (plot_supercell as ps,
 # _____________________CONFIGURATION PARAMETERS________________________
 # ---------------------------------------------------------------------
 
-file_in = 'read_in/SrTiO3_00Nb_SCARF.rmc6f'
+# file_in = 'read_in/SrTiO3_00Nb_SCARF.rmc6f'
+file_in = 'read_in/SrTiO3_00Nb.rmc6f'
 atomA = ['Ti','Nb']
 atomB = ['Sr']
 min_d = 1   # Min range for distance calculations (if = 0 distance to
