@@ -45,10 +45,10 @@ def centroid_calc(orthonormal_positions,
     returns list of vectors describing the distance between the central atom
     and the centroid position, and returns a list of centroid coordinates
     '''
-
+    import time
     center = []
     orbits = []
-
+    t0 = time.perf_counter()
     # Script similar to interatomic distance script
     for nC, atom in enumerate(orthonormal_positions):
         if orthonormal_positions[nC][0] in center_atom:
@@ -84,5 +84,29 @@ def centroid_calc(orthonormal_positions,
     # centroid coordinate
     for i, j in zip(center_coord, centroid_coord_list):
         off_centering_vector.append(np.subtract(i, j))
+    
+    
+    # deans messing about here, doesn't alter the output, just makes it take longer :)
+    t1 = time.perf_counter()
+    positions = np.array([x[2:] for x in orthonormal_positions]) # want a numpy array of the positions
+    offset = 39.3399/2 # half a unit cell (helpfully it's cubic so don't need anything more complex than this)
+    positions -= offset # now the unit cell goes from -19 to 19
+    idx_of_interest = [i for i,x in enumerate(orthonormal_positions) if x[0] in center_atom] # hack to find a list of indices we're interested in
+    results = np.zeros((positions.shape[0],3)) # predefine results array for speed
+    for i in idx_of_interest:
+        shifted = (positions - positions[i]) #shift all atoms so this one is at the origin
+        reshuffled = np.mod(shifted+offset, offset*2)-offset # the clever moving of atoms outside -19:19 back
+        distances  = np.power(np.square(reshuffled).sum(1),0.5) # calculate distances
+        idx = np.argsort(distances) # returns an array of sorted indices (i.e. distances[idx[0]] = 0, the distance from the atom to itself, distances[idx[1]] is somewthing like 2.5, etc.
+        results[i,:] = -np.mean(reshuffled[idx[1:7], :],0) #note we start at 1 to avoid the 0 for the same atom. Then average them. this calculates the central point so the displacements vector is -ve this
+
+    t2 = time.perf_counter()
+
+    print('first time was {}'.format(t1-t0))
+    print('first time was {}'.format(t2-t1))
+
+
+
+
 
     return off_centering_vector, centroid_coord_list
