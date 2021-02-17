@@ -9,6 +9,7 @@
 
 import re
 import numpy as np
+import pandas as pd
 
 class SuperCell():
 
@@ -74,30 +75,21 @@ class SuperCell():
         temp = re.findall('[-+]?\d*\.\d+|\d+', line_cell)
         cell_parameters = [float(i) for i in temp]
 
-        # Create atom list of lists, format:
+        # Create atom list array, format:
         # [element, number, position x, position y, position z]
-        atom_list = []
-        for line in atom_list_lines:
-            temp_list = []
-            split = line.split()
-            element = split[1]
-            number = int(split[0])
-            pos_x = float(split[3])
-            pos_y = float(split[4])
-            pos_z = float(split[5])
-            temp_list.append(element)
-            temp_list.append(number)
-            temp_list.append(pos_x)
-            temp_list.append(pos_y)
-            temp_list.append(pos_z)
-            atom_list.append(temp_list)
 
+        df = pd.DataFrame(atom_list_lines)
+        atom_list = np.array(df.iloc[:,0].str.split().tolist())
+
+        # create atributes
+        self.atom_list = atom_list
         self.cell_parameters = cell_parameters
         self.elements = elements
         self.atom_list = atom_list
         self.supercell_size = supercell_size
-        self.density = density
-
+        self.density = density        
+        
+        
     def orthonormalise_cell(self):
         """
         Orthonormalisation of a set of 3D coordinates.
@@ -108,13 +100,7 @@ class SuperCell():
         # Initialise transformation matrix M
         #--------------------------------------------------------------#
 
-        a = self.cell_parameters[0]
-        b = self.cell_parameters[1]
-        c = self.cell_parameters[2]
-
-        al = np.deg2rad(self.cell_parameters[3])
-        be = np.deg2rad(self.cell_parameters[4])
-        ga = np.deg2rad(self.cell_parameters[5])
+        a, b, c, al, be, ga = self.cell_parameters
 
         volume = (a * b * c *
                   (1 - np.cos(al)**2
@@ -124,7 +110,7 @@ class SuperCell():
                    * np.cos(be)
                    * np.cos(ga))
                   ** 0.5)
-
+        
         a1 = a
         a2 = 0
         a3 = 0
@@ -153,7 +139,7 @@ class SuperCell():
         # Orthonormalisation calculaion
         #--------------------------------------------------------------#
 
-        atom_positions = np.array(self.atom_list)[:, 2:5]
+        atom_positions = self.atom_list[:, 3:6]
 
         # Make dtype float64
         atom_positions = np.float64(atom_positions)
@@ -166,15 +152,12 @@ class SuperCell():
         self.orthonormal_positions = np.around(orthonormal_positions, 8)
 
         
-        self.orth_header = ['Element', 'ID', 'x', 'y', 'z']
-        self.orth_labels = np.array(self.atom_list)[:, :2].tolist()
+        self.orth_header = ['ID', 'Element', 'x', 'y', 'z']
+        self.orth_labels = self.atom_list[:, :2]
 
-        lbl_list = self.orth_labels
-        orth_list = self.orth_positions.tolist()
+        # concatenate labels and positions
+        self.orthonormal_label_positions = np.concatenate(
+            (self.orth_labels, self.orthonormal_positions), axis=1
+            )
 
-        opl = [lbl + pos for lbl, pos in zip(lbl_list, orth_list)]
-        self.orth_pos_lbl = opl
-
-        ###
-        ###
-        ######################################################
+        #--------------------------------------------------------------#
