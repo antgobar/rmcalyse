@@ -15,7 +15,7 @@ def get_centroids(orthonormal_positions,
         orthonormal_positions:
             list of lists of atom (element), atom_id and x, y, z
             orthonormal coordinates
-            list format: [element, atom_id, x, y, z]
+            list format: [id, element, x, y, z]
         center_atom:
             chosen atom from which to calculate distance vector do
             centroid
@@ -48,14 +48,13 @@ def get_centroids(orthonormal_positions,
     center = []
     orbits = []
 
-    # Script similar to interatomic distance script
     for nC, atom in enumerate(orthonormal_positions):
-        if orthonormal_positions[nC][0] in center_atom:
+        if orthonormal_positions[nC][1] in center_atom:
             labelC = orthonormal_positions[nC][:]
             coordC = orthonormal_positions[nC][2:5]
             temp = []  # initialise temporary list for orbits
             for nO, atom in enumerate(orthonormal_positions):
-                if orthonormal_positions[nO][0] in orbit_atoms:
+                if orthonormal_positions[nO][1] in orbit_atoms:
                     labelO = orthonormal_positions[nO][:]
                     coordO = orthonormal_positions[nO][2:5]
                     if distance_calculator.eucledian_distance(coordC, coordO) <= max_distance:

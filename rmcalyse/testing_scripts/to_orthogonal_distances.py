@@ -11,13 +11,13 @@ import os
 
 
 # Lattice parameters - unit cell length and angles
-a = 9.503044
-b = 5.52558
-c = 5.59397
+a = 1
+b = 1
+c = 1
 
-al = np.deg2rad(89.826400)
-be = np.deg2rad(125.757286)
-ga = np.deg2rad(89.927844)
+al = np.deg2rad(90)
+be = np.deg2rad(90)
+ga = np.deg2rad(90)
 
 
 # Atomic positions
@@ -44,17 +44,22 @@ dBC = (vBC @ g @ vBC.transpose())**0.5
 # dot product between B and C (matrix multiplication)
 dpBC = vBA @ g @ vCA.transpose()
 
-print('Metric tensor', g, sep = '\n')
-print('Distance B to A: ',str(dBA).replace('[','').replace(']',''))
-print('Distance C to A: ',str(dCA).replace('[','').replace(']',''))
-print('Distance B to C: ',str(dBC).replace('[','').replace(']',''))
+##print('Metric tensor', g, sep = '\n')
+##print('Distance B to A: ',str(dBA).replace('[','').replace(']',''))
+##print('Distance C to A: ',str(dCA).replace('[','').replace(']',''))
+##print('Distance B to C: ',str(dBC).replace('[','').replace(']',''))
+##
+##
+##
+##if np.array_equal(atomA, atomB) or np.array_equal(atomA, atomC):
+##    angleCAB = 'B or C cannot equal A!'
+##else:
+##    angleCAB = np.rad2deg(np.arccos(dpBC / (((dBA ** 2) * (dCA ** 2)) ** 0.5)))
+##
+##print('Angle between B and C: ',str(angleCAB).replace('[','').replace(']',''))
 
 
-
-if np.array_equal(atomA, atomB) or np.array_equal(atomA, atomC):
-    angleCAB = 'B or C cannot equal A!'
-else:
-    angleCAB = np.rad2deg(np.arccos(dpBC / (((dBA ** 2) * (dCA ** 2)) ** 0.5)))
-
-print('Angle between B and C: ',str(angleCAB).replace('[','').replace(']',''))
-
+atomZ = np.array([[0,0,1],[0,1, 1], [1,1,1]])
+vZA = atomA - atomZ
+dZA = np.sqrt(vZA @ g @ vZA.transpose())
+print(dZA)

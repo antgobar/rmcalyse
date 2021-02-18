@@ -16,19 +16,7 @@ class SuperCell():
     def __init__(self, file_path):
 
         self.file_path = file_path
-        self.cell_parameters = None
-        self.elements = None
-        self.atom_list = None
-        self.supercell_size = None
-        self.density = None
-        self.volume = None
-
-        self.matrix = None
-
-        self.orth_header = None
-        self.orth_labels = None
-        self.orthonormal_positions = None
-        self.orth_pos_lbl = None
+        
 
     def get_data(self):
 
@@ -85,7 +73,6 @@ class SuperCell():
         self.atom_list = atom_list
         self.cell_parameters = cell_parameters
         self.elements = elements
-        self.atom_list = atom_list
         self.supercell_size = supercell_size
         self.density = density        
         
@@ -102,6 +89,10 @@ class SuperCell():
 
         a, b, c, al, be, ga = self.cell_parameters
 
+        al = np.deg2rad(al)
+        be = np.deg2rad(be)
+        ga = np.deg2rad(ga)
+        
         volume = (a * b * c *
                   (1 - np.cos(al)**2
                    - np.cos(be)**2
@@ -156,7 +147,8 @@ class SuperCell():
         self.orth_labels = self.atom_list[:, :2]
 
         # concatenate labels and positions
-        self.orthonormal_label_positions = np.concatenate(
+        # makes everything a string.... fix!
+        self.orthonormal_data = np.concatenate(
             (self.orth_labels, self.orthonormal_positions), axis=1
             )
 

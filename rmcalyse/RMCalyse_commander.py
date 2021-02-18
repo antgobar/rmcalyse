@@ -16,6 +16,8 @@ from plotting_functions import (plot_supercell as ps,
                                 plot_centroid_vector_3d as cv3d,
                                 plot_stereographic_projection as sp)
 
+# Deans centroid vector script
+from testing_scripts import centroid_vector_dk_speed as cvds
 # ---------------------------------------------------------------------
 # =====================================================================
 
@@ -65,17 +67,17 @@ op = on.orthonormalise(cell, atom_list)
 
 # pih.iad_hist(op, atomA, atomB, min_d, max_d, hist_bin_size, combine)
 
-cent_vect, centroid = cv.centroid_calc(op,
+cent_vect, centroid, extra = cvds.centroid_calc(op,
                                        atomA,
                                        atomB,
                                        centroid_shell_d,
                                        coord_no)
 
-sp.stereographic_projection(cent_vect,
-                            show_points=False,
-                            plot_area='full',
-                            weighted=True,
-                            net=True)
+##sp.stereographic_projection(cent_vect,
+##                            show_points=False,
+##                            plot_area='full',
+##                            weighted=True,
+##                            net=True)
 
 # cvh.vector_hist(cent_vect)
 
