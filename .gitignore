@@ -1,5 +1,12 @@
 .DS_Store
+# large files
+pmn_levin.rmc6f
+pmn_levin.rmc6f.zip
+
+# custom
 /discussion/*
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
