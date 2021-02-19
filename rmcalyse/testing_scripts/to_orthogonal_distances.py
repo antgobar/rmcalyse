@@ -58,8 +58,16 @@ dpBC = vBA @ g @ vCA.transpose()
 ##
 ##print('Angle between B and C: ',str(angleCAB).replace('[','').replace(']',''))
 
+no_atoms = 5
 
-atomZ = np.array([[0,0,1],[0,1, 1], [1,1,1]])
-vZA = atomA - atomZ
-dZA = np.sqrt(vZA @ g @ vZA.transpose())
-print(dZA)
+atom_list = np.random.rand(no_atoms,3)
+
+distances = []
+
+for atom in atom_list:
+	vector = atom - atom_list
+	distance =np.diagonal(np.sqrt(vector @ g @ vector.transpose()))
+	distances.append(distance)
+
+print(distances)
+

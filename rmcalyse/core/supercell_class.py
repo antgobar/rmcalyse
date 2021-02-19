@@ -39,8 +39,8 @@ class SuperCell():
             # Supercell parameters
             if line.find('Cell') >= 0:
                 line_cell = line
-            # Atom list
-            if line.find('[1]') >= 0:
+            # Atom list ### TESTS NEEDED
+            if line.find('[') >= 0:
                 atom_list_lines.append(line)
 
         # Put element, atom no. and atomic positions etc. into lists
@@ -130,26 +130,20 @@ class SuperCell():
         # Orthonormalisation calculaion
         #--------------------------------------------------------------#
 
-        atom_positions = self.atom_list[:, 3:6]
+        raw_basis_positions = self.atom_list[:, 3:6]
 
         # Make dtype float64
-        atom_positions = np.float64(atom_positions)
+        self.raw_basis_positions = np.float64(raw_basis_positions)
 
         # Orthonormalisation of atomic positions
-        orthonormal_positions = np.dot(M, atom_positions.T).T
+        orthonormal_positions = np.dot(M, self.raw_basis_positions.T).T
 
         # Round to make very small values (e.g. ~10e-16), zero.
         # parse orthonormal positions to class instance
         self.orthonormal_positions = np.around(orthonormal_positions, 8)
 
         
-        self.orth_header = ['ID', 'Element', 'x', 'y', 'z']
-        self.orth_labels = self.atom_list[:, :2]
-
-        # concatenate labels and positions
-        # makes everything a string.... fix!
-        self.orthonormal_data = np.concatenate(
-            (self.orth_labels, self.orthonormal_positions), axis=1
-            )
+        self.position_list_header = ['ID', 'Element', 'x', 'y', 'z']
+        self.position_labels = self.atom_list[:, :2]
 
         #--------------------------------------------------------------#
