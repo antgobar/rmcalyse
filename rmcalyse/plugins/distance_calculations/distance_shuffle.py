@@ -1,7 +1,7 @@
 import numpy as np
 
 def array_distance_orthonormaliser(labels, positions, matrix, center_atom, orbit_atom):
-       
+    
     offset = 0.5 # half a unit cell
     
     positions -= offset # now the unit cell goes from -0.5:0.5
@@ -11,7 +11,8 @@ def array_distance_orthonormaliser(labels, positions, matrix, center_atom, orbit
     idxB = [i for i,x in enumerate(positions) if labels[i][1] in orbit_atom]
 
     all_distances = []
-    all_labels = []
+    center_labels = []
+    orbit_labels = []
     
     for index in idx_of_interest:
         
@@ -26,10 +27,14 @@ def array_distance_orthonormaliser(labels, positions, matrix, center_atom, orbit
         
         all_distances.append(distances)
 
-        lables_c = [labels[index].tolist()]
-        labels_o = labels[idxB].tolist()
+        labels_c = [labels[index] for i in range(len(labels[idxB]))]
+        labels_o = labels[idxB]
 
-        lables_c.append(labels_o)
-        all_labels.append(lables_c)
+        center_labels.append(labels_c)
+        orbit_labels.append(labels_o)
 
-    return all_distances, all_labels
+    return all_distances, center_labels, orbit_labels
+
+
+
+
