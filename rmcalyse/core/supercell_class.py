@@ -74,9 +74,12 @@ class SuperCell():
         self.cell_parameters = cell_parameters
         self.elements = elements
         self.supercell_size = supercell_size
-        self.density = density        
-        
-        
+        self.density = density  
+
+        self.position_list_header = ['ID', 'Element', 'mult', 'x', 'y', 'z', 'subcell', 'h','k','l']
+        self.position_labels = self.atom_list[:, :2]      
+
+
     def orthonormalise_cell(self):
         """
         Orthonormalisation of a set of 3D coordinates.
@@ -122,15 +125,13 @@ class SuperCell():
         self.average_cell_volume = volume / np.prod(self.supercell_size)
 
         self.matrix = M
-
-        #--------------------------------------------------------------#
-
+        
+        # x, y, z raw basis positions
+        raw_basis_positions = self.atom_list[:, 3:6]
 
         #--------------------------------------------------------------#
         # Orthonormalisation calculaion
         #--------------------------------------------------------------#
-
-        raw_basis_positions = self.atom_list[:, 3:6]
 
         # Make dtype float64
         self.raw_basis_positions = np.float64(raw_basis_positions)
@@ -142,8 +143,8 @@ class SuperCell():
         # parse orthonormal positions to class instance
         self.orthonormal_positions = np.around(orthonormal_positions, 8)
 
-        
-        self.position_list_header = ['ID', 'Element', 'x', 'y', 'z']
-        self.position_labels = self.atom_list[:, :2]
-
         #--------------------------------------------------------------#
+
+        def make_df(self, positions):
+            df = pd.DataFrame.from_records(positions, columns=self.position_list_header)
+            self.positions_df = df
