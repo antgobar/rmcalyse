@@ -17,6 +17,7 @@ def orthographic_projection(centroid_vector,
 
     Arguments:
     cent_vetc:
+    
         list of centroid vectors
     show_points:
         show vector points if True. If False, only kde shows
