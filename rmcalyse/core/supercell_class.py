@@ -20,8 +20,11 @@ class SuperCell():
 
     def get_data(self):
 
-        with open(self.file_path, 'r') as f:
-            rmc_data = f.readlines()
+        try:
+            with open(self.file_path, 'r') as f:
+                rmc_data = f.readlines()
+        except:
+            print('File not found.')
 
         atom_list_lines = []
 
@@ -79,6 +82,12 @@ class SuperCell():
         self.position_list_header = ['ID', 'Element', 'mult', 'x', 'y', 'z', 'subcell', 'h','k','l']
         self.position_labels = self.atom_list[:, :2]      
 
+        # x, y, z raw basis positions
+        raw_basis_positions = self.atom_list[:, 3:6]
+
+        # Make dtype float64
+        self.raw_basis_positions = np.float64(raw_basis_positions)
+
 
     def orthonormalise_cell(self):
         """
@@ -125,16 +134,10 @@ class SuperCell():
         self.average_cell_volume = volume / np.prod(self.supercell_size)
 
         self.matrix = M
-        
-        # x, y, z raw basis positions
-        raw_basis_positions = self.atom_list[:, 3:6]
 
         #--------------------------------------------------------------#
         # Orthonormalisation calculaion
         #--------------------------------------------------------------#
-
-        # Make dtype float64
-        self.raw_basis_positions = np.float64(raw_basis_positions)
 
         # Orthonormalisation of atomic positions
         orthonormal_positions = np.dot(M, self.raw_basis_positions.T).T

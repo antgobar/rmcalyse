@@ -2,13 +2,14 @@ import numpy as np
 import pandas as pd
 
 
-class Distance():
+class Centroid():
 
 	def __init__(self, labels, positions):
 		self.labels = labels
 		self.positions = positions
 
-	def array_distance_orthonormaliser(self, atomA, atomB, matrix):
+
+	def get_centroid_vectors(self, atomA, atomB, coordination_number, matrix):
 
 		positions = self.positions
 		labels = self.labels
@@ -28,11 +29,8 @@ class Distance():
 		labels_A = np.array(labels[indices_A])
 		labels_B = np.array(labels[indices_B])
 
-		self.labels_A = labels_A
-		self.labels_B = labels_B
-
-	    # empty lists to fill
-		distances_list = []
+		# predefine results array for speed
+		self.centroid_vectors = np.zeros((positions.shape[0],3)) 
 
 		# loop through atomA
 		for index in indices_A:
@@ -49,40 +47,23 @@ class Distance():
 			# calculate distances
 			distances  = np.power(np.square(orthonormalised).sum(1), 0.5) 
 
-			# append to list 
-			distances_list.append(distances)
+			# returns an array indices sorted by distance
+			sorted_indices = np.argsort(distances) 
+			
+			# ordered orthonormal distances
+			ordered_orthonormalised_positions = orthonormalised[sorted_indices]
 
-		# create attribute & flatten list
-		self.distances_list = np.array(distances_list).flatten()
+			# select smallest n where n is coordination number
+			coordinating_orthonormal_positions = ordered_orthonormalised_positions[ : coordination_number]
 
-		# make empty list
-		labels_list = []
+			# average position (centroid) of the coordination atoms
+			centroid = np.mean(coordinating_orthonormal_positions, axis = 0)
+			
+			# populate atribute: centroids array at index of interest
+			# the remaining indices will be 0
+			self.centroid_vectors[index,:] = -centroid
 
-		# nested loop to iterate through B for every A
-		for label_i in self.labels_A:
-			for label_j in self.labels_B:
-				combined = label_i.tolist() + label_j.tolist()
-				labels_list.append(combined)
-
-		self.labels_list = labels_list
-
-
-	def make_df(self):
-		# column labels
-		cols = ['id_A', 'atom_A','id_B', 'atom_B']
-		distance_df = pd.DataFrame.from_records(self.labels_list, columns=cols)
-		
-		distance_df['distance'] = self.distances_list
-		self.distance_df = distance_df
-
-	def distance_window_filter(self, min_d, max_d):
-		df = self.distance_df
-		self.distance_df = df.loc[(df['distance'] > min_d) & (df['distance'] <= max_d)]
-
-
-
-
-
+		self.non_zero_vectors = self.centroid_vectors[np.linalg.norm(self.centroid_vectors,  axis = 1) > 0]
 
 
 

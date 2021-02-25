@@ -7,10 +7,11 @@ from core.supercell_class import SuperCell
 
 # plugin imports
 from plugins.distance_calculations.distance_class import Distance
+from plugins.centroid_vector.centroid_class import Centroid
 
 import time
 
-file_path = 'read_in/SrTiO3_00Nb.rmc6f'
+file_path = 'read_in/SrTiO3_30Nb_SCARF.rmc6f'
 
 # create rmc object
 rmc_data = SuperCell(file_path)
@@ -18,19 +19,11 @@ rmc_data = SuperCell(file_path)
 # fetch data from rmc6f file
 rmc_data.get_data()
 df = pd.DataFrame.from_records(rmc_data.atom_list, columns=rmc_data.position_list_header)
-
-
-# orthonormalise cell
 rmc_data.orthonormalise_cell()
 
-# distances
-rmc_distances = Distance(rmc_data.position_labels, rmc_data.raw_basis_positions)
-rmc_distances.array_distance_orthonormaliser('Sr', 'Ti', rmc_data.matrix)
-rmc_distances.make_distance_labels()
-rmc_distances.make_df()
-rmc_distances.distance_window_filter(1, 4)
 
-print(rmc_distances.distance_df)
+rmc_centroid = Centroid(rmc_data.position_labels, rmc_data.raw_basis_positions)
+rmc_centroid.get_centroid_vectors('Sr','Ti', 8, rmc_data.matrix)
 
-
+print(len(rmc_centroid.non_zero_vectors))
 
