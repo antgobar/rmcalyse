@@ -26,4 +26,4 @@ rmc_centroid = Centroid(rmc_data.position_labels, rmc_data.raw_basis_positions)
 rmc_centroid.get_centroid_vectors('Sr','Ti', 8, rmc_data.matrix)
 
 print(len(rmc_centroid.non_zero_vectors))
-
+print(rmc_centroid.non_zero_vectors[:, 0])
