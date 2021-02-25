@@ -8,8 +8,8 @@ from core.supercell_class import SuperCell
 # plugin imports
 from plugins.distance_calculations.distance_class import Distance
 from plugins.centroid_vector.centroid_class import Centroid
-
-import time
+from plugins.projections.projection_class import Projection
+from plugins.plots.plot_projections import plot_projections
 
 file_path = 'read_in/SrTiO3_30Nb_SCARF.rmc6f'
 
@@ -25,5 +25,11 @@ rmc_data.orthonormalise_cell()
 rmc_centroid = Centroid(rmc_data.position_labels, rmc_data.raw_basis_positions)
 rmc_centroid.get_centroid_vectors('Sr','Ti', 8, rmc_data.matrix)
 
-print(len(rmc_centroid.non_zero_vectors))
-print(rmc_centroid.non_zero_vectors[:, 0])
+vectors = rmc_centroid.non_zero_vectors
+
+to_project = Projection(vectors)
+
+x, y = to_project.lambert_azimuthal_projection()
+
+plot_projections(x, y, show_points=True)
+

@@ -149,6 +149,6 @@ def orthographic_projection(centroid_vector,
         spn.sp_net(radius=1)
     
     plt.gca().set_aspect('equal', adjustable='box')
-    
+
     plt.show()
 
