@@ -43,8 +43,11 @@ class Projection():
 		# 1 - z coordinate
 		z_up = 1 - np.absolute(self.z_norm)
 
+		# projected vector magnitude
+		r  = np.sqrt(self.x_norm ** 2 + self.y_norm ** 2 + z_up ** 2)
+		
 		# ratio multiplyer
-		k = np.sqrt(self.x ** 2 + self.y ** 2 + z_up ** 2) / np.sqrt(self.x ** 2 + self.y ** 2)
+		k =  r / np.sqrt(self.x_norm ** 2 + self.y_norm ** 2)
 
 		x = self.x_norm * k
 		y = self.y_norm * k

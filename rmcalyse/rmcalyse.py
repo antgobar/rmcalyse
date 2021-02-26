@@ -33,16 +33,23 @@ vectors = rmc_centroid.non_zero_vectors
 to_project = Projection(vectors)
 
 # all normalised vector magnitudes should be 1!
-print(np.linalg.norm(to_project.norm_vectors, axis =1))
+print(np.linalg.norm(to_project.norm_vectors, axis =1)[:5])
 
 
-# x, y = to_project.lambert_azimuthal_projection()
+x, y = to_project.lambert_azimuthal_projection()
 
-# weights = to_project.magnitudes.reshape(len(to_project.magnitudes),)
+weights = to_project.magnitudes.reshape(len(to_project.magnitudes),)
 
-# plot_projections(x, y, weighting=weights, show_points=True)
+plot_projections(x, y, weighting=weights, show_points=True)
 
 
+
+import matplotlib.pyplot as plt 
+import seaborn as sns
+
+projected_magnitude = np.sqrt(x**2 + y**2)
+sns.histplot(data=projected_magnitude)
+plt.show()
 ####
 # points = fibonacci_sphere(500)
 
