@@ -10,7 +10,9 @@ from plugins.distance_calculations.distance_class import Distance
 from plugins.centroid_vector.centroid_class import Centroid
 from plugins.projections.projection_class import Projection
 from plugins.plots.plot_projections import plot_projections
+from plugins.plots.fibonacci_sphere import fibonacci_sphere
 
+# file path
 file_path = 'read_in/SrTiO3_30Nb_SCARF.rmc6f'
 
 # create rmc object
@@ -27,9 +29,32 @@ rmc_centroid.get_centroid_vectors('Sr','Ti', 8, rmc_data.matrix)
 
 vectors = rmc_centroid.non_zero_vectors
 
+
 to_project = Projection(vectors)
 
-x, y = to_project.lambert_azimuthal_projection()
+# all normalised vector magnitudes should be 1!
+print(np.linalg.norm(to_project.norm_vectors, axis =1))
 
-plot_projections(x, y, show_points=True)
+
+# x, y = to_project.lambert_azimuthal_projection()
+
+# weights = to_project.magnitudes.reshape(len(to_project.magnitudes),)
+
+# plot_projections(x, y, weighting=weights, show_points=True)
+
+
+####
+# points = fibonacci_sphere(500)
+
+# sphere = Projection(points)
+
+# x, y = sphere.orthographic_projection()
+# plot_projections(x, y, show_points=True)
+
+# x, y = sphere.stereographic_projection()
+# plot_projections(x, y, show_points=True)
+
+# x, y = sphere.lambert_azimuthal_projection()
+# plot_projections(x, y, show_points=True)
+
 

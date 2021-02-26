@@ -43,7 +43,7 @@ class Projection():
 		# 1 - z coordinate
 		z_up = 1 - np.absolute(self.z_norm)
 
-		# ratio
+		# ratio multiplyer
 		k = np.sqrt(self.x ** 2 + self.y ** 2 + z_up ** 2) / np.sqrt(self.x ** 2 + self.y ** 2)
 
 		x = self.x_norm * k
