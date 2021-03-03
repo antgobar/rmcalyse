@@ -11,24 +11,40 @@
 ### atom_list = read_in('SrTiO3_00Nb_222.rmc6f')[1]
 ###
 # ------------------------------------------------------------------------
-
+import numpy as np
 import re           # regular expressions
+from dataclasses import dataclass
 
-def read_in(file_in):
-    '''
-    Reads in *.rmc6f file from the read_in directory and extracts useful
-    parametere e.g. unit cell parameters and atomic positions
-    '''
+@dataclass
+class MetaData:
+    a: float
+    b: float
+    c: float
+    al_deg: float
+    be_deg: float
+    ga_deg: float
+    atoms: list
 
-    rmc6f_input = open(file_in, 'r')
+    def __post_init__(self):
+        self.al, self.be, self.ga = np.deg2rad([self.al_deg, self.be_deg, self.ga_deg])
+        self.V = self.a*self.b*self.c * (1 - np.cos(self.al)**2 - np.cos(self.be)**2 -np.cos(self.ga)**2 + 2*np.cos(self.al)*np.cos(self.be)*np.cos(self.ga))**0.5
+        a1 = self.a
+        a2 = 0
+        a3 = 0
+        b1 = self.b * np.cos(self.ga)
+        b2 = self.b * np.sin(self.ga)
+        b3 = 0
+        c1 = self.c * np.cos(self.be)
+        c2 = self.c * (np.cos(self.al) - (np.cos(self.be) * np.cos(self.ga))) / np.sin(self.ga)
+        c3 = self.V / (self.a * self.b * np.sin(self.ga))
+        self.M = np.array([[a1, b1, c1], [a2, b2, c2], [a3, b3, c3]])
 
+def convert_meta_list_to_meta_object(rmc6f_input):
     line_elements = []
     line_density = []
     line_supercell = []
     line_cell = []
     line_atom_list = []
-
-    # print('\nReading file:', file_in, '...')
 
     # Extract and save variables
     for line in rmc6f_input:
@@ -44,10 +60,6 @@ def read_in(file_in):
         #   atom lines
         if line.find('[1]') >= 0:
             line_atom_list.append(line)
-
-    # Close file!
-    rmc6f_input.close()
-##    print('\nFile is closed: ', rmc6f_input.closed)
 
     # Put element, atom no. and atomic positions into lists
 
@@ -69,22 +81,6 @@ def read_in(file_in):
     temp = re.findall('[-+]?\d*\.\d+|\d+', line_cell)
     cell = [float(i) for i in temp]  # Needed for interatomic distances
 
-# Create list of atoms
-    atom_list = []
-    for line in line_atom_list:
-        temp = []
-        temp_1 = re.findall(r'\b\d+\b', line)  # ints
-        temp_2 = re.findall('[a-zA-Z]+', line)  # letters
-        temp_3 = re.findall('\d+\.\d+', line)  # floats
-        temp.append(temp_2[0])
-        temp.append(int(temp_1[0]))
-        temp.append(float(temp_3[0]))
-        temp.append(float(temp_3[1]))
-        temp.append(float(temp_3[2]))
-        atom_list.append(temp)
+    meta = MetaData(*cell, elements)
 
-    atom_list_head = ['Atom', 'no.', 'x.', 'y', 'z']
-# print('\nFormat of atom list (non orthonormalised): ',\
-# atom_list_head, atom_list[0], sep = '\n')
-
-    return cell, atom_list, elements
+    return meta

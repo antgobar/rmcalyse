@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-import loggging
+import logging
 
 from rmcalyse.core.hdfstore import HDFS
 _plugins = {}
@@ -17,37 +17,34 @@ class BasePlugin(ABC):
     """
 
     @classmethod
-    def __init_subclass__(cls, name='plugin_name', is_abstract=False, **kwargs):
+    def __init_subclass__(cls, plugin_name='plugin_name',  **kwargs):
         super().__init_subclass__(**kwargs)
-        if not is_abstract:
-            _plugins[name] = cls
+        _plugins[plugin_name] = cls
+        cls.name = plugin_name
 
-    @abstractmethod
-    def __init__(self, use_output_from = 'previous_plugin_name', config = {}):
-        self.use_output_from = use_output_from
+    def __init__(self, config = {}):
         self.config = config
 
-    @abstractmethod
-    def _process(self, data):
+    @staticmethod
+    def lint(plugin_dictionary):
         pass
 
-    def process(self, path_to_hdf):
-        self._hdfs = HDFS(self.name, self.use_output_from, path_to_hdf)
-        for i,data in enumerate(self._hdfs):
-            result = self._process(data)
-            self.write(i, result)
+    @abstractmethod
+    def process(self, df, meta, other):
+        pass
 
-    def write(self, i, data):
-        if data is not None:
-            self._hdfs.write(i, data)
+    def get_required_input(self):
+        return None
 
-
+    @property
+    def name(self):
+        return self.__class__.name
 
 class PluginFactory:
     @classmethod
-    def get_factory(cls, plugin_name, previous_plugin_name, config):
+    def get_factory(cls, plugin_name):
         if (plugin_name in _plugins.keys()):
-            return _plugins[plugin_name](previous_plugin_name, config)
+            return _plugins[plugin_name]
 
     @classmethod
     def get_plugins(cls):
