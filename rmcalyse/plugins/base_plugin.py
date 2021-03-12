@@ -40,6 +40,9 @@ class BasePlugin(ABC):
     def name(self):
         return self.__class__.name
 
+    def get_column_names(self, headers):
+        return ['{}_{}'.format(self.name, x) for x in headers]
+
 class PluginFactory:
     @classmethod
     def get_factory(cls, plugin_name):

@@ -8,7 +8,7 @@ class Orthonormaliser(BasePlugin, plugin_name='orthonormalise'):
         xyz_array = df[['x','y','z']].to_dask_array(lengths=True)
         answer = (meta.M @ xyz_array.T).T
         answer_df = dd.from_dask_array(answer)
-        answer_df.columns = ['{}_{}'.format(self.name, x) for x in 'xyz']
+        answer_df.columns = self.get_column_names('xyz')
 
         df = df.merge(answer_df, left_index=True, right_index=True)
         return df
