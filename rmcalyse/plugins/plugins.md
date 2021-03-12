@@ -35,10 +35,6 @@ you can add any other methods you require, but note the methods on the base clas
     def lint(plugin_dictionary):
         pass
 
-    @abstractmethod
-    def process(self, df, meta, other):
-        pass
-
     def get_required_input(self):
         return None
 
@@ -49,7 +45,7 @@ you can add any other methods you require, but note the methods on the base clas
 
 ### Linting
 
-Plugins can check the yaml input for conforming configuration before being called. The ```lint``` method is called to this end. the assert method should be used:
+Plugins can check the yaml input for conforming configuration before being called. The ```lint``` method is called to this end. the assert function should be used. Any failed assertions will be caught by the linter.:
 
 ```
     @staticmethod
