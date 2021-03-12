@@ -19,6 +19,7 @@ class Framework:
         self.plugins = config.get(ConfigKeys.PLUGINS, [])
         self.meta = None
         self.df = None
+        self._outputs = {}
         logger.debug(('framework successfully created with input: {}, output: {}, '
                      'and plugins = {}').format(self.input, self.output, self.plugins))
         if auto_prep:
@@ -29,6 +30,19 @@ class Framework:
         config = load_yaml(yaml_file_path)
         return cls(config)
 
+    def compile_outputs_dict(self):
+        if not isinstance(self.plugins, list):
+            logger.warning('plugins is not list, cannot iterate to find outputs')
+            return
+        for plugin in self.plugins:
+            if isinstance(plugin, dict):
+                for k,v in plugin.items():
+                    if isinstance(v, dict):
+                        if 'output' in v.keys():
+                            output = v['output']
+                            logger.debug('appending output {} to outputs'.format(output))
+                            self._outputs[output] = None
+
     def prepare_for_go(self):
         logger.debug('prepare_for_go...')
         try:
@@ -38,6 +52,7 @@ class Framework:
             logger.debug(('file {} is not openable as a parquet file. '
                         'Opening using rmc6f reader instead').format(self.input))
             self.df, self.meta = load_rmc6f_files(self.input)
+            self.compile_outputs_dict()
 
     def go(self):
         logger.debug('go...')
@@ -45,9 +60,8 @@ class Framework:
             (p_name, p_settings), = p.items()
             logger.info('getting plugin {} with settings {}'.format(p_name, p_settings))
             plugin = PluginFactory.get_factory(p_name)(p_settings)
-            required_input = plugin.get_required_input()
             try:
-                self.df = plugin.process(self.df, self.meta, required_input)
+                self.df = plugin.process(self.df, self.meta, self._outputs)
             except Exception as e:
                 logger.error('There was an unhandled error in plugin {}, {}'.format(p_name, e))
                 logger.exception(e)

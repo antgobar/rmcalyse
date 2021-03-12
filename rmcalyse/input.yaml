@@ -1,5 +1,5 @@
 ---
-input: rmcalyse/read_in/SrTiO3_00Nb_SCARF.*
+input: rmcalyse/read_in/many/SrTiO3_00Nb_SCARF*
 output: srtio3.parquet
 plugins:
     - orthonormalise:
@@ -10,8 +10,8 @@ plugins:
         n: 6
     - centroid:
         atom: [Sr]
-        outer: [O]
         r_max: 3.1
+        outer: [O]
         n: 12
     - stereographic:
         atom: [Sr]
