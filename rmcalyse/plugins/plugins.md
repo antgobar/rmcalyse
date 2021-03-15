@@ -1,6 +1,6 @@
 # Plugins for Developers
 
-This is an introductory guide for developrs looking to develop plugins for rmcalyse
+This is an introductory guide for developers looking to develop plugins for rmcalyse.
 
 ### Premise
 
@@ -10,7 +10,7 @@ A plugin is a class whose main functionality is invoked using the ```plugin.proc
 | -------- | ------------------------------------------------------------ |
 | df       | the main ```dask.dataframe``` object. This contains all the atomistic data concerning this rmcalyse run. |
 | meta     | the ```rmcalyse.general_functions.read_rmc6f.MetaData``` object. (this needs to move, that's a crazy place for it to live) |
-| other    | dictionaery of non-atomistic data that this plugin needs (see below) |
+| other    | dictionary of non-atomistic data that this plugin needs (see below) |
 
 The plugin should return an atomistic ```dask.dataframe```object. The design intention is that any plugin only *adds* data to the atomistic ```df```, athough this is currently not enforced. The idea was that all changes should happen in-place but Dean couldn't get that to work :-|
 
@@ -59,7 +59,7 @@ We should probably look at adding a "lint these values" function, but for the mo
 
 ### Other Data
 
-Other data is treated in a different way. The framework contains a dictionary _outputs, where the keys are the strings the user has entered next to any "output" setting in the yaml file. In the example there is just one, ```some_name``` which is output from the toy "clustering" plugin. The whole dict is passed to every plugin as the third input. Any plugin which needs to output some auxilliary data into this dict can just set it. 
+Other data is treated in a different way. The framework contains a dictionary ```_outputs```, where the keys are the strings the user has entered next to any "output" setting in the yaml file. In the example there is just one, ```some_name``` which is output from the toy "clustering" plugin. The whole dict is passed to every plugin as the third input. Any plugin which needs to output some auxilliary data into this dict can just set it. 
 
 ```
     def process(self, df, meta, other):
@@ -89,7 +89,7 @@ logger = logging.getLogger(__name__)
     logger.info("the rms result was twelvty")
 ```
 
-There are a number of levels of logging you can use ([see docs](https://docs.python.org/3/library/logging.html)); low ones go in to a log file, and high ones go both into the file and are directed to the screen. Currently ```info``` and higher are shown to the user (that is defined by the level of the ```s_handler``` in ```log_setup.py```.
+There are a number of levels of logging you can use ([see docs](https://docs.python.org/3/library/logging.html)); low ones go in to a log file, and high ones go both into the file and are directed to the screen. Currently ```info``` and higher are shown to the user (that is defined by the level of the ```s_handler``` in ```log_setup.py```).
 
 ### Working on individual configurations
 
