@@ -52,6 +52,7 @@ class Framework:
             logger.debug(('file {} is not openable as a parquet file. '
                         'Opening using rmc6f reader instead').format(self.input))
             self.df, self.meta = load_rmc6f_files(self.input)
+            self.meta.cells = range(len(self.input))
             self.compile_outputs_dict()
 
     def go(self):

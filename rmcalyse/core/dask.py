@@ -1,4 +1,5 @@
 import dask.dataframe as dd
+import pandas as pd
 
 from rmcalyse.general_functions.read_rmc6f import convert_meta_list_to_meta_object
 
@@ -31,7 +32,7 @@ def _load_rmc6f_file(filepath, metalines=False):
                 else:
                     break
         metalines = len(meta)
-    df = dd.read_csv(
+    df = pd.read_csv(
             filepath,
             skiprows = metalines + 1,
             header = None, 
@@ -50,7 +51,7 @@ def load_rmc6f_files(filelist):
             tmp,_,_ = _load_rmc6f_file(f, metalines)
             tmp[Cols.CELL] = i
             df = df.append(tmp)
-    df = df.categorize(columns=[Cols.ATOM,Cols.CELL])
+    #df = df.categorize(columns=[Cols.ATOM,Cols.CELL])
     meta = convert_meta_list_to_meta_object(meta)
     return df, meta
 

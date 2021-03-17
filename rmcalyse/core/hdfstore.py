@@ -32,7 +32,8 @@ class HDFS:
     def __iter__(self):
         return HDFStoreIterator(self)
 
-    def write(self, )
+    def write(self ):
+        pass
 
 class HDFSIterator:
     def __init__(self, hdfs):
