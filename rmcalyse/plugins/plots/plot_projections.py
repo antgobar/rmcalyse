@@ -1,5 +1,7 @@
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from scipy.stats import gaussian_kde
 
 def plot_projections(x, y, weighting=None, show_points=False):
 

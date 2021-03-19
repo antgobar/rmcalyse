@@ -12,48 +12,48 @@ from plugins.projections.projection_class import Projection
 from plugins.plots.plot_projections import plot_projections
 from plugins.plots.fibonacci_sphere import fibonacci_sphere
 
-# # file path
-# file_path = 'read_in/SrTiO3_30Nb_SCARF.rmc6f'
+# file path
+file_path = 'read_in/SrTiO3_00Nb_SCARF.rmc6f'
 
-# # create rmc object
-# rmc_data = SuperCell(file_path)
+# create rmc object
+rmc_data = SuperCell(file_path)
 
-# # fetch data from rmc6f file
-# rmc_data.get_data()
-# df = pd.DataFrame.from_records(rmc_data.atom_list, columns=rmc_data.position_list_header)
-# rmc_data.orthonormalise_cell()
-
-
-# rmc_centroid = Centroid(rmc_data.position_labels, rmc_data.raw_basis_positions)
-# rmc_centroid.get_centroid_vectors('Sr','Ti', 8, rmc_data.matrix)
-
-# vectors = rmc_centroid.non_zero_vectors
+# fetch data from rmc6f file
+rmc_data.get_data()
+df = pd.DataFrame.from_records(rmc_data.atom_list, columns=rmc_data.position_list_header)
+rmc_data.orthonormalise_cell()
 
 
-# to_project = Projection(vectors)
+rmc_centroid = Centroid(rmc_data.position_labels, rmc_data.raw_basis_positions)
+rmc_centroid.get_centroid_vectors('Sr','Ti', 8, rmc_data.matrix)
 
-# # all normalised vector magnitudes should be 1!
-# print(np.linalg.norm(to_project.norm_vectors, axis =1)[:5])
+vectors = rmc_centroid.non_zero_vectors
 
 
-# x, y = to_project.lambert_azimuthal_projection()
+to_project = Projection(vectors)
 
-# weights = to_project.magnitudes.reshape(len(to_project.magnitudes),)
+# all normalised vector magnitudes should be 1!
+print(np.linalg.norm(to_project.norm_vectors, axis =1)[:5])
 
-# plot_projections(x, y, weighting=weights, show_points=True)
 
-####
-points = fibonacci_sphere(500)
+x, y = to_project.orthographic_projection()
 
-sphere = Projection(points)
+weights = to_project.magnitudes.reshape(len(to_project.magnitudes),)
 
-x, y = sphere.orthographic_projection()
-plot_projections(x, y, show_points=True)
+#plot_projections(x, y, weighting=weights, show_points=False)
 
-x, y = sphere.stereographic_projection()
-plot_projections(x, y, show_points=True)
+#### FIBONACCI TESTIN
+# points = fibonacci_sphere(500)
 
-x, y = sphere.lambert_azimuthal_projection()
-plot_projections(x, y, show_points=True)
+# sphere = Projection(points)
+
+# x, y = sphere.orthographic_projection()
+# plot_projections(x, y, show_points=True)
+
+# x, y = sphere.stereographic_projection()
+# plot_projections(x, y, show_points=True)
+
+# x, y = sphere.lambert_azimuthal_projection()
+# plot_projections(x, y, show_points=True)
 
 

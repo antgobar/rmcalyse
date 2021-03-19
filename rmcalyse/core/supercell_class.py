@@ -25,6 +25,8 @@ class SuperCell():
                 rmc_data = f.readlines()
         except:
             print('File not found.')
+            
+            return 'Start again.'
 
         atom_list_lines = []
 
