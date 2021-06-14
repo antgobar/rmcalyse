@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 import glob
 
+import numpy as np
 from pyarrow.lib import ArrowInvalid
 
 from rmcalyse.core.dask import load_rmc6f_files, load_parquet_file
@@ -52,8 +53,13 @@ class Framework:
             logger.debug(('file {} is not openable as a parquet file. '
                         'Opening using rmc6f reader instead').format(self.input))
             self.df, self.meta = load_rmc6f_files(self.input)
-            self.meta.cells = range(len(self.input))
             self.compile_outputs_dict()
+            self.data = self.df.drop(['label','original'], axis=1).set_index(['cell','n']).to_xarray()
+            for k,v in self.meta.__dict__.items():
+                if k != 'M':
+                    self.data.attrs[k] = v
+
+            self.data['xyz'] = (['v3', 'cell', 'n'], np.array((self.data.x,self.data.y, self.data.z)))
 
     def go(self):
         logger.debug('go...')
@@ -62,12 +68,22 @@ class Framework:
             logger.info('getting plugin {} with settings {}'.format(p_name, p_settings))
             plugin = PluginFactory.get_factory(p_name)(p_settings)
             try:
-                self.df = plugin.process(self.df, self.meta, self._outputs)
+                _ = plugin.process(self.data, self._outputs)
+                self.save()
             except Exception as e:
                 logger.error('There was an unhandled error in plugin {}, {}'.format(p_name, e))
                 logger.exception(e)
 
-
+    def _save(self, filename):
+        try:
+            self.data.to_netcdf(filename, engine='netcdf4')
+        except Exception as e:
+            logger.error('there was a problem saving the file {}'.format(filename))
+            logger.error(e)
+            raise
+        logger.info('file {} successfully saved.'.format(filename))
+    def save(self):
+        self._save(self.output)
 
 
 

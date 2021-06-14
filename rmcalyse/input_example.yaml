@@ -1,0 +1,5 @@
+---
+input: rmcalyse/read_in/many/SrTiO3_00Nb_SCARF*
+output: example.nc
+plugins:
+    - example:

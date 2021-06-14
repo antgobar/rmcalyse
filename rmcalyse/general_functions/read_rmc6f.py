@@ -38,7 +38,10 @@ class MetaData:
         c2 = self.c * (np.cos(self.al) - (np.cos(self.be) * np.cos(self.ga))) / np.sin(self.ga)
         c3 = self.V / (self.a * self.b * np.sin(self.ga))
         self.M = np.array([[a1, b1, c1], [a2, b2, c2], [a3, b3, c3]])
-        self.cells = []
+
+    @classmethod
+    def from_xarray_meta(cls, x):
+        return cls(x.a, x.b, x.c, x.al_deg, x.be_deg, x.ga_deg, x.atoms)
 
 def convert_meta_list_to_meta_object(rmc6f_input):
     line_elements = []
