@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 class Exampler(BasePlugin, plugin_name='example'):
 
-    def process(self,data, outputs):
+    def process(self,data, outputs, dask_handler):
 
         # get one type of atom:
         just_oxygens_everythin = data.where(data.atom=='O', drop=True) # drop means get rid of, rather than mask with nan
