@@ -10,7 +10,10 @@ from rmcalyse.framework import Framework
 from rmcalyse.core.dask import _load_rmc6f_file
 
 f = Framework.from_yaml('rmcalyse/input.yaml')
+g = Framework.from_yaml('rmcalyse/input_example.yaml')
 
+
+"""
 for inp in f.input:
     df, me, ml = _load_rmc6f_file(inp)
 
@@ -59,7 +62,8 @@ labels = data[['atom']].to_xarray()
 ds = xr.Dataset(
     {
         "position" : (['n3', 'cell', 'atoms'], positions),
-        "index"    : (['n3', 'cell', 'atoms'], indicies)
+        "index"    : (['n3', 'cell', 'atoms'], indicies),
+        "labels"   : (['cell', 'atoms'], labels)
     },
     coords={
         "atoms": atoms,
@@ -67,7 +71,7 @@ ds = xr.Dataset(
         "cell" : cells,
     },
 )
-
+"""
 
 
 
