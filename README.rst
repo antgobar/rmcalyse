@@ -26,6 +26,8 @@ analyse rmcprofile outputs
 * Free software: MIT license
 * Documentation: https://rmcalyse.readthedocs.io.
 
+CONTRIBUTORS
+
 
 Features
 --------
