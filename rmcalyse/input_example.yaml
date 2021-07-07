@@ -3,3 +3,6 @@ input: rmcalyse/read_in/many/SrTiO3_00Nb_SCARF*
 output: example.nc
 plugins:
     - example:
+    - examplee:
+        atom_were_inteerested_in: Pb
+        output: cheese
