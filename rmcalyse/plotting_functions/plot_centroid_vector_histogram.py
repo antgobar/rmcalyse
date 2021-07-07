@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 def vector_hist(cent_vect):
@@ -13,7 +14,17 @@ def vector_hist(cent_vect):
 
     bins = np.arange(min(list_lengths), max(list_lengths) + binwidth, binwidth)
 
-    plt.hist(list_lengths, bins)
-    plt.title('Histograms of offcentering vectors')
+    # plt.hist(list_lengths, bins)
+    # plt.title('Histograms of offcentering vectors')
+    # plt.xlabel('Displacement magnitude')
+    # plt.ylabel('Count')
 
+    # plt.show()
+
+    sns.histplot(data=list_lengths, bins=bins, kde=True)
+    plt.title('Histograms of offcentering vectors')
+    # plt.xlim(0, .5)
+    # plt.ylim(0, 100)
+    plt.xlabel('Displacement magnitude')
+    plt.ylabel('Count')
     plt.show()

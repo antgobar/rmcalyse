@@ -1,18 +1,54 @@
 import numpy as np
 from general_functions import distance_calculator as dc
 
-def centroid_calc(orthonormal_positions, center_atom, orbit_atoms, max_d, coord_no):
+
+def centroid_calc(orthonormal_positions,
+                  center_atom,
+                  orbit_atoms,
+                  max_d,
+                  coord_no):
     '''
-    Takes center_atom e.g. 'Ti', and orbit_atoms e.g. 'Pb', and
-    coordination number coord_no (8 for A- and B-site orbitals, 6 for
-    O-site.
-    Returns atomic coordinates of center atom, centroid (average
-    coordinates of orbit atoms) and vector corresponding to the
-    relative position of the center atom relative to the centroid.
+    Function which returns the list of vectors described by the distance
+    between a given atom and the centroid of the polyhedra defined by
+    its nearest neighbours
+
+    Arguments:
+        orthonormal_positions:
+            list of lists of atom (element), atom_id and x, y, z
+            orthonormal coordinates
+            list format: [element, atom_id, x, y, z]
+        center_atom:
+            chosen atom from which to calculate distance vector do
+            centroid
+        orbit_atoms:
+            chosen atom from which to form polyhedra and calculate
+            centroid position
+        max_d:
+            maximum interatomic distance window to look for nearest
+            neighbour atom
+        coord_no:
+            coordination number of center_atom and orbit_atoms pairs
+            examples assume persovskite cnofiguration
+            e.g. 1
+                center_atom: A-site
+                orbit_atom: B-site
+                coord_no: 8
+            e.g. 2
+                center_atom: B-site
+                orbit_atom: O-site
+                coord_no: 6
+            e.g. 3
+                center_atom: A-site
+                orbit_atom: O-site
+                coord_no: 12                
+    
+    returns list of vectors describing the distance between the central atom
+    and the centroid position, and returns a list of centroid coordinates
     '''
 
     center = []
     orbits = []
+
     # Script similar to interatomic distance script
     for nC, atom in enumerate(orthonormal_positions):
         if orthonormal_positions[nC][0] in center_atom:

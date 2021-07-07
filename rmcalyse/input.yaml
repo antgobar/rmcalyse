@@ -1,0 +1,28 @@
+---
+input: rmcalyse/read_in/many/SrTiO3_00Nb_SCARF*
+output: srtio3.parquet
+plugins:
+    - orthonormalise:
+    - centroid:
+        atom: [Ti]
+        outer: [O]
+        r_max: 4.2
+        n: 6
+    - centroid:
+        atom: [Sr]
+        r_max: 3.1
+        outer: [O]
+        n: 12
+    - stereographic:
+        atom: [Sr]
+    - clustering:
+        atom: [Ti]
+        output: some_name
+    - volume_plot:
+        input: some_name
+
+
+
+
+
+
